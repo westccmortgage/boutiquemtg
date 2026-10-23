@@ -1,6 +1,6 @@
 # boutiquemtg.com — Boutique Mortgage (West Coast Capital Mortgage Inc.)
 # Static site, no bundler. Netlify Functions provide the rates proxy and the
-# Netlify Forms → GR CRM relay. The AI concierge is wcci.online, embedded.
+# Netlify Forms → GR CRM relay. The AI concierge is wwccm.com (Wallet WCCM advisor), embedded.
 [build]
   publish = "."
   command = ""
@@ -17,7 +17,7 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), geolocation=(), microphone=(self \"https://wcci.online\")"
+    Permissions-Policy = "camera=(), geolocation=(), microphone=(self \"https://wwccm.com\" \"https://wcci.online\")"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
 
 [[headers]]
@@ -35,7 +35,7 @@
 # Friendly API aliases
 [[redirects]]
   from = "/concierge"
-  to = "https://wcci.online/"
+  to = "https://wwccm.com/strategy"
   status = 302
 [[redirects]]
   from = "/api/rates"
