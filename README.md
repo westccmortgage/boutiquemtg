@@ -12,7 +12,7 @@ integrations shared with the rest of the WCCM network.
 | Strategy Studio | `studio.html` | Embeds the WCCM property-location engine (`californiamtg.com/studio/`, same engine as Before Jumbo Loan / K West) |
 | Legal | `disclosures.html`, `privacy.html` | Licensing, EHO, AI + SMS disclosures, privacy |
 | Styles / scripts | `assets/css/styles.css`, `assets/js/main.js`, `assets/js/i18n.js`, `assets/js/consent.js` | Dark boutique design system, interactions, EN/ES/RU/中文, consent-gated tags |
-| AI concierge | `index.html` `#concierge` | Embeds wwccm.com/strategy (Wallet WCCM advisor) with microphone permission; standalone, not tied to the estimator |
+| AI concierge | `index.html` `#concierge` | Embeds wcci.online (Loan Strategy AI) with microphone permission; standalone, not tied to the estimator |
 | Rates proxy | `netlify/functions/rates.mjs` | Mirrors `westcoastcapitalmortgage.com/assets/rates.json` — update rates once on the corporate site |
 | CRM relay | `netlify/functions/submission-created.mjs` | Netlify Forms event → GR CRM `lead-inbound` (same pipeline as the other brand sites) |
 
@@ -21,7 +21,7 @@ integrations shared with the rest of the WCCM network.
 - **Lead capture** — Netlify Form `boutique-scenario` (honeypot, attribution hidden fields: UTM, gclid/gbraid/wbraid/fbclid, landing/conversion page, referrer, submission_id, language, concierge summary). AJAX submit with retry; falls back to the native POST → `/thanks.html`.
 - **GR CRM** — every verified submission is relayed server-side to `grcrm.com/.netlify/functions/lead-inbound` with the per-source token.
 - **Conversion tracking** — GTM `GTM-K2X3X454`, Google Ads `AW-18417657219` + lead conversion, GA4 `G-GB57YWMKBH`, Microsoft Clarity — all loaded only after cookie consent. Accepted leads push `wccm_lead_submit` with a `lead_event_id` (same event name as the corporate site, so existing GTM triggers work).
-- **AI concierge** — the Wallet WCCM AI Mortgage Strategy Advisor (wwccm.com/strategy) embedded in an iframe with `allow="microphone"`; voice input, document upload, EN/ES/RU/中文. `netlify.toml` delegates the microphone to `https://wwccm.com` (and `https://wcci.online` as a ready fallback) via `Permissions-Policy`. `/concierge` short-links to it full screen. To switch to wcci.online, change the iframe `data-src` in `index.html`.
+- **AI concierge** — the WCCI Loan Strategy AI (wcci.online) embedded in an iframe with `allow="microphone"`; voice input, document upload, EN/ES/RU/中文. `netlify.toml` delegates the microphone to `https://wcci.online` (and `https://wwccm.com` as a ready fallback) via `Permissions-Policy`. `/concierge` short-links to it full screen. To switch to wwccm.com/strategy, change the iframe `data-src` in `index.html`.
 - **Live rates** — board reads the corporate `rates.json` through the proxy; "Use in estimator" pushes the rate into the calculator.
 - **Payment estimator** — PITI with MI bands; one-click hand-off to the concierge or the form.
 - **Strategy Studio + Financial Navigator video** — FHFA/FHA county limits, review paths, buydowns; HeyGen avatar tour video served from californiamtg.com.
