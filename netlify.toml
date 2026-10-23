@@ -1,0 +1,69 @@
+# boutiquemtg.com — Boutique Mortgage (West Coast Capital Mortgage Inc.)
+# Static site, no bundler. Netlify Functions provide the AI concierge,
+# the rates proxy and the Netlify Forms → GR CRM relay.
+[build]
+  publish = "."
+  command = ""
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# HTML / CSS / JS are not fingerprinted — always revalidate so updates show up.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# www → apex
+[[redirects]]
+  from = "https://www.boutiquemtg.com/*"
+  to = "https://boutiquemtg.com/:splat"
+  status = 301
+  force = true
+
+# Friendly API aliases
+[[redirects]]
+  from = "/api/concierge"
+  to = "/.netlify/functions/concierge"
+  status = 200
+[[redirects]]
+  from = "/api/rates"
+  to = "/.netlify/functions/rates"
+  status = 200
+
+# Short links
+[[redirects]]
+  from = "/apply"
+  to = "https://2817729.my1003app.com/2775380/register"
+  status = 302
+[[redirects]]
+  from = "/portal"
+  to = "https://ourmtg.com"
+  status = 302
+[[redirects]]
+  from = "/review"
+  to = "https://westcoastcapitalmortgage.com/leave-a-review"
+  status = 302
+[[redirects]]
+  from = "/studio"
+  to = "/studio.html"
+  status = 200
+[[redirects]]
+  from = "/disclosures"
+  to = "/disclosures.html"
+  status = 200
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200

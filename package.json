@@ -1,0 +1,16 @@
+{
+  "name": "boutiquemtg",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "boutiquemtg.com — Boutique Mortgage by West Coast Capital Mortgage Inc. Static site + Netlify Functions (AI concierge, rates proxy, CRM lead relay).",
+  "scripts": {
+    "dev": "netlify dev",
+    "serve": "npx --yes serve . -l 8080",
+    "check": "for f in netlify/functions/*.mjs assets/js/*.js; do node --check \"$f\" || exit 1; done && echo ok"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1"
+  }
+}
