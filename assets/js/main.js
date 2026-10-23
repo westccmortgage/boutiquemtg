@@ -270,8 +270,6 @@
       const phone = $("#c-phone").value.replace(/\D/g, ""), email = $("#c-email").value.trim();
       if (!phone && !email) { $("#c-phone").setCustomValidity("Add a phone or email"); form.reportValidity(); $("#c-phone").setCustomValidity(""); return; }
       stampForm(form);
-      const summary = window.BQChat && window.BQChat.summary ? window.BQChat.summary() : "";
-      if (summary) setHidden(form, "concierge_summary", summary);
       const label = btn.textContent; btn.disabled = true; btn.textContent = "Sending…"; wrap.classList.remove("error");
       const body = encode(form);
       let ok = false;
@@ -289,15 +287,11 @@
       }
     });
   }
-  /* smooth-scroll helpers + program → concierge prefill */
+  /* smooth-scroll helpers; remember which program card was tapped */
   document.addEventListener("click", (e) => {
     const s = e.target.closest("[data-scroll]"); if (s) { const t = $(s.getAttribute("data-scroll")); if (t) t.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); }
-    const a = e.target.closest("[data-ask]");
-    if (a) {
-      e.preventDefault();
-      const tag = a.querySelector("h3"); if (tag && form) setHidden(form, "program_interest", tag.textContent.trim());
-      window.BQChat && window.BQChat.ask(a.getAttribute("data-ask"));
-    }
+    const prog = e.target.closest(".program");
+    if (prog && form) { const tag = prog.querySelector("h3"); if (tag) setHidden(form, "program_interest", tag.textContent.trim()); }
   });
 
   /* ---------- live rates board (proxied from the WCCM rate desk) ---------- */
@@ -328,62 +322,21 @@
     });
   }
 
-  /* ---------- AI concierge ---------- */
-  const log = $("#chat-log"), chatForm = $("#chat-form"), input = $("#chat-input"), status = $("#chat-status"), fab = $("#chat-fab"), chatBox = $("#chat");
-  if (log && chatForm) {
-    const history = [];
-    let lastSummary = "", busy = false, disabled = false;
-    const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-    /* markdown-lite for bot replies: **bold**, bullets, paragraphs — HTML-escaped first */
-    const md = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-      .split(/\n{2,}/).map((p) => /^(?:[-•*] .+\n?)+$/.test(p.trim()) ? "<ul>" + p.trim().split(/\n/).map((l) => "<li>" + l.replace(/^[-•*] /, "") + "</li>").join("") + "</ul>" : "<p>" + p.replace(/\n/g, "<br>") + "</p>").join("");
-    const add = (cls, text) => { const d = document.createElement("div"); d.className = "msg " + cls; if (cls === "bot") d.innerHTML = md(text); else d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
-    const typing = () => { const d = document.createElement("div"); d.className = "msg bot typing"; d.innerHTML = "<i></i><i></i><i></i>"; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
-    const estimatorContext = () => {
-      const g = (id) => { const el = $(id); return el ? el.textContent : ""; };
-      return $("#r-total") ? { price: g("#o-price"), down: g("#o-down"), rate: g("#o-rate"), term: g("#r-term"), estimated_payment: "$" + g("#r-total") + "/mo", loan: g("#r-loan"), ltv: g("#r-ltv") } : null;
+  /* ---------- AI concierge: standalone wcci.online Loan Strategy AI (voice-enabled) ---------- */
+  const frame = $("#concierge-iframe"), loading = $("#concierge-loading"), fab = $("#chat-fab"), box = $(".concierge-frame");
+  if (frame) {
+    let started = false;
+    const start = () => {
+      if (started) return; started = true;
+      frame.addEventListener("load", () => { if (loading) loading.classList.add("done"); push("bq_concierge_open", {}); }, { once: true });
+      frame.src = frame.getAttribute("data-src");
     };
-    const offline = () => {
-      disabled = true; if (status) status.textContent = "Concierge resting · humans are on";
-      add("bot", "The AI concierge is taking a break right now. Send your scenario through the form below, or call (310) 654-1577 and a licensed loan officer will pick it up personally.");
-    };
-    async function send(text) {
-      text = (text || "").trim(); if (!text || busy) return;
-      if (disabled) { add("user", text); add("bot", "Our team will answer this personally — use the form below or call (310) 654-1577."); return; }
-      busy = true; add("user", text); history.push({ role: "user", content: text }); input.value = ""; autosize();
-      const t = typing(); if (status) status.textContent = "Thinking…";
-      push("bq_concierge_message", { turn: history.length });
-      try {
-        const res = await fetch(cfg.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history.slice(-16), lang: lang(), context: estimatorContext() }) });
-        const data = await res.json().catch(() => ({}));
-        t.remove();
-        if (res.status === 503 || data.error === "concierge_not_configured") { history.pop(); offline(); return; }
-        if (!res.ok || !data.ok) { history.pop(); add("err", data.error || "Something went wrong. Try again in a moment."); return; }
-        history.push({ role: "assistant", content: data.reply });
-        const m = add("bot", data.reply);
-        if (data.summary) {
-          lastSummary = data.summary;
-          const h = document.createElement("a"); h.href = "#contact"; h.className = "handoff"; h.textContent = "Send this scenario to a loan officer →";
-          h.addEventListener("click", () => { const msg = $("#c-message"); if (msg && !msg.value.trim()) msg.value = "From the concierge: " + lastSummary; });
-          m.appendChild(document.createElement("br")); m.appendChild(h);
-        }
-      } catch (err) { t.remove(); history.pop(); add("err", "Connection hiccup. Try again, or call (310) 654-1577."); }
-      finally { busy = false; if (status && !disabled) status.textContent = "Online · powered by Claude"; }
-    }
-    function autosize() { input.style.height = "auto"; input.style.height = Math.min(140, input.scrollHeight) + "px"; }
-    input.addEventListener("input", autosize);
-    input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chatForm.requestSubmit(); } });
-    chatForm.addEventListener("submit", (e) => { e.preventDefault(); send(input.value); });
-    window.BQChat = {
-      ask(q) { const sec = $("#concierge"); if (sec) sec.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); setTimeout(() => send(q), reduceMotion ? 0 : 500); },
-      summary: () => lastSummary
-    };
-    $$(".concierge-chips button").forEach((b) => b.addEventListener("click", () => send(b.getAttribute("data-ask"))));
-    const askEst = $("#ask-estimate");
-    if (askEst) askEst.addEventListener("click", () => { const c = estimatorContext(); window.BQChat.ask(`I'm looking at ${c.price} with ${c.down} down on a ${c.term} at ${c.rate}, estimated ${c.estimated_payment}. What should I know about this structure and what could lower the payment?`); });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((en, obs) => { if (en[0].isIntersecting) { start(); obs.disconnect(); } }, { rootMargin: "600px 0px" }).observe(frame);
+    } else start();
     if (fab) {
-      fab.addEventListener("click", () => { window.BQChat.ask(""); const sec = $("#concierge"); if (sec) sec.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); setTimeout(() => input.focus(), 600); });
-      if ("IntersectionObserver" in window && chatBox) new IntersectionObserver((en) => fab.classList.toggle("hide", en[0].isIntersecting), { threshold: 0.2 }).observe(chatBox);
+      fab.addEventListener("click", () => { start(); const sec = $("#concierge"); if (sec) sec.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); });
+      if ("IntersectionObserver" in window && box) new IntersectionObserver((en) => fab.classList.toggle("hide", en[0].isIntersecting), { threshold: 0.25 }).observe(box);
     }
   }
 

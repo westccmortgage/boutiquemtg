@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
-  <defs><radialGradient id="g" cx="80%" cy="10%" r="80%"><stop offset="0" stop-color="#3a3020"/><stop offset="1" stop-color="#12121a"/></radialGradient></defs>
-  <rect width="1280" height="720" fill="url(#g)"/>
-  <g fill="none" stroke="#d9b86c" stroke-opacity=".25"><circle cx="640" cy="360" r="220"/><circle cx="640" cy="360" r="300"/></g>
-  <circle cx="640" cy="360" r="64" fill="#d9b86c"/><path d="M622 328l56 32-56 32z" fill="#0b0b10"/>
-  <text x="640" y="500" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#f3eee4">Your Financial Navigator</text>
-  <text x="640" y="540" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" letter-spacing="4" fill="#a7a3b3">GUIDED TOUR · 2 MIN · EDUCATIONAL</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 405 720">
+  <defs><radialGradient id="g" cx="70%" cy="15%" r="90%"><stop offset="0" stop-color="#3a3020"/><stop offset="1" stop-color="#12121a"/></radialGradient></defs>
+  <rect width="405" height="720" fill="url(#g)"/>
+  <g fill="none" stroke="#d9b86c" stroke-opacity=".25"><circle cx="202" cy="330" r="110"/><circle cx="202" cy="330" r="160"/></g>
+  <circle cx="202" cy="330" r="48" fill="#d9b86c"/><path d="M189 306l42 24-42 24z" fill="#0b0b10"/>
+  <text x="202" y="530" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="26" fill="#f3eee4">Financial Navigator</text>
+  <text x="202" y="565" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" letter-spacing="3" fill="#a7a3b3">GUIDED TOUR · 2 MIN</text>
 </svg>
