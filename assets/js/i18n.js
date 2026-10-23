@@ -20,10 +20,9 @@
     "Skip to content": { es: "Saltar al contenido", ru: "К содержанию", zh: "跳到内容" },
     /* hero */
     "Private-client mortgage · CA · FL · TX": { es: "Hipotecas de cliente privado · CA · FL · TX", ru: "Ипотека для частных клиентов · CA · FL · TX", zh: "私人客户房贷 · CA · FL · TX" },
-    "Not a bank.": { es: "No somos un banco.", ru: "Не банк.", zh: "不是银行。" },
-    "A": { es: "Una", ru: "Просто", zh: "而是" },
-    "boutique": { es: "boutique", ru: "бутик", zh: "精品工作室" },
-    "Mortgage, tailored.": { es: "Hipotecas a medida.", ru: "Ипотека по мерке.", zh: "量身定制的房贷。" },
+    "One advisor.": { es: "Un solo asesor.", ru: "Один советник.", zh: "一位顾问。" },
+    "Every lender.": { es: "Todos los prestamistas.", ru: "Все кредиторы.", zh: "全市场贷款机构。" },
+    "Your mortgage, done right.": { es: "Tu hipoteca, bien hecha.", ru: "Ваша ипотека — как надо.", zh: "您的房贷，办得妥当。" },
     "One advisor from the first conversation to the keys. We structure the loan before the paperwork, then shop it across a wide lender marketplace — jumbo, conventional, FHA, VA, Non-QM, DSCR and bank-statement programs.":
       { es: "Un solo asesor desde la primera conversación hasta las llaves. Estructuramos el préstamo antes del papeleo y lo cotizamos en un amplio mercado de prestamistas: jumbo, convencional, FHA, VA, Non-QM, DSCR y programas con estados de cuenta.",
         ru: "Один советник — от первого разговора до ключей. Сначала выстраиваем структуру кредита, потом подбираем кредитора на широком рынке: jumbo, conventional, FHA, VA, Non-QM, DSCR и программы по банковским выпискам.",
