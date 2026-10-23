@@ -510,7 +510,10 @@ em.accent { font-style: italic; color: var(--gold-2); font-variation-settings: "
 .chat-log { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; max-height: 480px; scroll-behavior: smooth; }
 .msg { max-width: 86%; padding: 13px 16px; border-radius: 16px; font-size: 15px; line-height: 1.55; white-space: pre-wrap; word-wrap: break-word; animation: msgIn 0.4s var(--ease); }
 @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } }
-.msg.bot { align-self: flex-start; background: var(--ink-3); border: 1px solid var(--line); border-bottom-left-radius: 6px; }
+.msg.bot { align-self: flex-start; background: var(--ink-3); border: 1px solid var(--line); border-bottom-left-radius: 6px; white-space: normal; }
+.msg.bot p + p, .msg.bot ul + p, .msg.bot p + ul { margin-top: 10px; }
+.msg.bot ul { padding-left: 18px; list-style: disc; display: grid; gap: 4px; }
+.msg.bot strong { color: var(--gold-2); font-weight: 700; }
 .msg.user { align-self: flex-end; background: var(--gold); color: var(--ink); border-bottom-right-radius: 6px; font-weight: 500; }
 .msg.err { align-self: flex-start; background: rgba(224,122,106,0.12); border: 1px solid rgba(224,122,106,0.4); color: #f3b1a6; }
 .msg.typing { display: inline-flex; gap: 5px; padding: 14px 18px; }

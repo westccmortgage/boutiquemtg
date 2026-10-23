@@ -333,7 +333,11 @@
   if (log && chatForm) {
     const history = [];
     let lastSummary = "", busy = false, disabled = false;
-    const add = (cls, text) => { const d = document.createElement("div"); d.className = "msg " + cls; d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
+    const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    /* markdown-lite for bot replies: **bold**, bullets, paragraphs — HTML-escaped first */
+    const md = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .split(/\n{2,}/).map((p) => /^(?:[-•*] .+\n?)+$/.test(p.trim()) ? "<ul>" + p.trim().split(/\n/).map((l) => "<li>" + l.replace(/^[-•*] /, "") + "</li>").join("") + "</ul>" : "<p>" + p.replace(/\n/g, "<br>") + "</p>").join("");
+    const add = (cls, text) => { const d = document.createElement("div"); d.className = "msg " + cls; if (cls === "bot") d.innerHTML = md(text); else d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
     const typing = () => { const d = document.createElement("div"); d.className = "msg bot typing"; d.innerHTML = "<i></i><i></i><i></i>"; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
     const estimatorContext = () => {
       const g = (id) => { const el = $(id); return el ? el.textContent : ""; };
